@@ -1,0 +1,9 @@
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://embed.tawk.to https://mc.yandex.ru;
+  style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+  img-src 'self' data: https:;
+  connect-src 'self' https://b24-xrpmdc.bitrix24.ru https://mc.yandex.ru;
+  frame-src https://www.google.com;
+">

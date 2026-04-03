@@ -768,7 +768,83 @@ async function sendForm(e, formType){
 document.addEventListener("DOMContentLoaded", () => {
   initLanguage();
 });
+function isBot(formData) {
+  // Если заполнено скрытое поле - это бот
+  if (formData.website || formData.email2) {
+    return true;
+  }
+  return false;
+}
 
+// Валидация телефона
+function validatePhone(phone) {
+  const regex = /^\+?[0-9\s\-\(\)]{10,20}$/;
+  return regex.test(phone);
+}
+
+// Валидация имени
+function validateName(name) {
+  if (!name || name.length < 2 || name.length > 50) {
+    return false;
+  }
+  // Только буквы, пробелы, дефисы
+  const regex = /^[a-zA-Zа-яА-ЯёЁ\s\-']+$/;
+  return regex.test(name);
+}
+
+// Отправка формы с защитой
+async function sendForm(event, formType) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData);
+  
+  // Проверка на бота
+  if (isBot(data)) {
+    console.log('🤖 Bot detected');
+    return;
+  }
+  
+  // Валидация
+  if (!validateName(data['Ваше имя'] || data.name)) {
+    alert('Пожалуйста, введите корректное имя');
+    return;
+  }
+  
+  if (!validatePhone(data['Телефон'] || data.phone)) {
+    alert('Пожалуйста, введите корректный телефон');
+    return;
+  }
+  
+  // Добавь метаданные
+  data.timestamp = new Date().toISOString();
+  data.formType = formType;
+  data.language = document.documentElement.lang;
+  data.userAgent = navigator.userAgent;
+  
+  // Отправка
+  try {
+    const response = await fetch('/api/lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Показать спасибо
+      openModal('thanks');
+      form.reset();
+    } else {
+      alert('Ошибка отправки. Попробуйте позже.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Ошибка соединения.');
+  }
+}
 // ============================================
 // CONSOLE WELCOME
 // ============================================
