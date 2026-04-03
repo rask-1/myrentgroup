@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Sitemap: https://myrentgroup.com/sitemap.xml
+
+# Запрет индексации служебных файлов
+Disallow: /api/
+Disallow: /node_modules/

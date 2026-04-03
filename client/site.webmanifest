@@ -1,0 +1,23 @@
+{
+  "name": "Rent Group - Недвижимость в Батуми",
+  "short_name": "Rent Group",
+  "description": "Квартиры у моря в Батуми. Рассрочка, инвестиции, помощь в покупке.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A192F",
+  "theme_color": "#0A192F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logorent.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logorent.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
