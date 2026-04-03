@@ -1,54 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3TRMXEXRMY"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-3TRMXEXRMY');
+  </script>
 
-  gtag('config', 'G-3TRMXEXRMY');
-</script>
-<input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
-<input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="yandex-verification" content="9b380eedebffc5cf" />
-<meta name="google-site-verification" content="9-YECL8Qcip6Leph3RqFpd7v4kDtaKx31pTCcAe_6U8" />
-<title>Rent Group - Недвижимость в Батуми</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<meta name="description" content="Rent Group - недвижимость в Батуми. Подберём квартиру у моря за 24 часа. Рассрочка от застройщика.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Верификация -->
+  <meta name="yandex-verification" content="9b380eedebffc5cf" />
+  <meta name="google-site-verification" content="9-YECL8Qcip6Leph3RqFpd7v4kDtaKx31pTCcAe_6U8" />
+  
+  <title>Rent Group - Недвижимость в Батуми</title>
+  
+  <!-- Meta SEO -->
+  <meta name="description" content="Rent Group - недвижимость в Батуми. Подберём квартиру у моря за 24 часа. Рассрочка от застройщика.">
   <meta name="keywords" content="недвижимость Батуми, купить квартиру, Грузия, рассрочка, инвестиции">
   <meta name="author" content="Rent Group">
   <meta name="robots" content="index, follow">
-  
-  <!-- Canonical URL (главный адрес сайта) -->
   <link rel="canonical" href="https://myrentgroup.com/">
   
-  <!-- ===============================
-       FAVICON (для всех браузеров)
-       =============================== -->
+  <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/logorent.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/logorent.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/logorent.png">
   <link rel="manifest" href="/site.webmanifest">
-
   
-  <!-- ===============================
-       PRECONNECT & PERFORMANCE
-       =============================== -->
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:site_name" content="Rent Group">
+  <meta property="og:url" content="https://myrentgroup.com/">
+  <meta property="og:title" content="Rent Group - Недвижимость в Батуми">
+  <meta property="og:description" content="Квартира у моря за $5000? Да, это реально (через рассрочку!)">
+  <meta property="og:image" content="https://myrentgroup.com/logorent.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@rentgroup">
+  <meta name="twitter:title" content="Rent Group - Недвижимость в Батуми">
+  <meta name="twitter:description" content="Квартира у моря за $5000? Да, это реально (через рассрочку!)">
+  <meta name="twitter:image" content="https://myrentgroup.com/logorent.png">
+  
+  <!-- Preconnect & Preload (Performance) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" as="style">
+  <link rel="preload" href="styles.min.css" as="style">
+  <link rel="preload" href="logorent.png" as="image">
   
-  <!-- ===============================
-       STYLES & SCRIPTS
-       =============================== -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="styles.min.css">
+  <!-- Font Awesome - полная версия -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Structured Data (Schema.org) -->
+  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -64,25 +81,21 @@
       "addressCountry": "GE"
     },
     "priceRange": "$$",
-    "image": "https://myrentgroup.com/og-image.jpg"
+    "image": "https://myrentgroup.com/logorent.png"
   }
-<!-- ЯНДЕКС.МЕТРИКА -->
-<script type="text/javascript">
-window.yaParams = {site: 'rentgroup'};
-(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-m[i].l=1*new Date();
-for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r)return;}
-k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-})(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
-
-ym(12345678, "init", {
-    clickmap:true,
-    trackLinks:true,
-    accurateTrackBounce:true,
-    webvisor:true
-});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/12345678" style="position:absolute;left:-9999px;" alt="" /></div></noscript>
+  </script>
+  
+  <!-- Yandex Metrica -->
+  <script type="text/javascript">
+  window.yaParams = {site: 'rentgroup'};
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r)return;}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+  })(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+  ym(12345678, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true});
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/12345678" style="position:absolute;left:-9999px;" alt="" /></div></noscript>
 </head>
 
 <body>
@@ -102,7 +115,7 @@ ym(12345678, "init", {
 <header class="header">
   <div class="container header-inner">
     <a href="#" class="logo-link" onclick="scrollToTop()">
-      <img src="logorent.png" alt="Rent Group" class="logo" loading="lazy">
+      <img src="logorent.png" alt="Rent Group" class="logo" loading="lazy" width="200" height="100">
     </a>
 
     <div class="header-right">
@@ -115,12 +128,10 @@ ym(12345678, "init", {
       <a href="tel:+995123456789" class="phone">+995 123 456 789</a>
 
       <div class="social-icons">
-        <a href="#" class="social-icon" target="_blank"><i class="fab fa-tiktok"></i></a>
-        <a href="https://www.instagram.com/rent_group_batumi/" class="social-icon" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href=" https://www.facebook.com/share/g/1B8AgFRfMs/?mibextid=wwXIfr" class="social-icon" target="_blank">
-    <i class="fab fa-facebook"></i>  
-  </a>
-        <a href="https://t.me/rent_group_geo " class="social-icon" target="_blank"><i class="fab fa-telegram-plane"></i></a>
+        <a href="#" class="social-icon" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.instagram.com/rent_group_batumi/" class="social-icon" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/share/g/1B8AgFRfMs/?mibextid=wwXIfr" class="social-icon" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://t.me/rent_group_geo" class="social-icon" target="_blank" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
       </div>
 
       <button class="btn btn-gold" onclick="openModal('callback')" data-i18n="orderCall">Заказать звонок</button>
@@ -155,15 +166,19 @@ ym(12345678, "init", {
   <div class="hero-overlay"></div>
   <div class="container hero-content">
     <h1 class="animate-text" data-i18n="heroTitle">
-  Квартира у моря за $5000?<br>
-  Да, это реально<br>
-  <span class="accent">(через рассрочку!)</span>
-</h1>
-<p class="hero-subtitle" data-i18n="heroSubtitle">
-  Подберём объект под ваш бюджет за 24 часа
-</p>
+      Квартира у моря за $5000?<br>
+      Да, это реально<br>
+      <span class="accent">(через рассрочку!)</span>
+    </h1>
+    <p class="hero-subtitle" data-i18n="heroSubtitle">
+      Подберём объект под ваш бюджет за 24 часа
+    </p>
 
     <form class="glass-form" onsubmit="sendForm(event, 'hero')" id="hero-form">
+      <!-- Honeypot (защита от ботов) -->
+      <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+      <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
+      
       <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
       
       <div class="phone-field">
@@ -173,7 +188,6 @@ ym(12345678, "init", {
             <span class="selected-code">+995</span>
             <i class="fas fa-chevron-down"></i>
           </div>
-          
           <div class="country-dropdown">
             <div class="country-search">
               <i class="fas fa-search"></i>
@@ -182,7 +196,6 @@ ym(12345678, "init", {
             <div class="country-list"></div>
           </div>
         </div>
-        
         <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
         <input type="hidden" class="selected-country-code" value="995">
       </div>
@@ -215,10 +228,7 @@ ym(12345678, "init", {
           <i class="fas fa-chart-line"></i>
         </div>
         <h3 data-i18n="investment">Инвестиционные объекты</h3>
-        <p data-i18n="investmentDesc">
-  Квартиры с доходностью 10-14% годовых. 
-  Помощь в управлении недвижимостью.
-</p>
+        <p data-i18n="investmentDesc">Квартиры с доходностью 10-14% годовых. Помощь в управлении недвижимостью.</p>
       </div>
 
       <div class="card feature-card">
@@ -250,10 +260,7 @@ ym(12345678, "init", {
           <i class="fas fa-shield-alt"></i>
         </div>
         <h3 data-i18n="safety">Гарантия безопасности</h3>
-        <p data-i18n="safetyDesc">
-  Полная юридическая проверка всех документов. 
-  Работаем официально по договору.
-</p>
+        <p data-i18n="safetyDesc">Полная юридическая проверка всех документов. Работаем официально.</p>
       </div>
 
       <div class="why-item">
@@ -261,7 +268,7 @@ ym(12345678, "init", {
           <i class="fas fa-clock"></i>
         </div>
         <h3 data-i18n="timeSaving">Экономия времени</h3>
-        <p data-i18n="timeSavingDesc">Подбор объектов за 24 часа. Не тратьте дни на самостоятельный поиск.</p>
+        <p data-i18n="timeSavingDesc">Подбор объектов за 24 часа. Не тратьте недели на самостоятельный поиск.</p>
       </div>
 
       <div class="why-item">
@@ -302,7 +309,7 @@ ym(12345678, "init", {
         </div>
         <h3 data-i18n="telegram">Telegram</h3>
         <p data-i18n="telegramDesc">Актуальные предложения и новости рынка недвижимости Батуми</p>
-        <a href="https://t.me/rent_group_geo " class="btn btn-accent" target="_blank" data-i18n="subscribe">Подписаться</a>
+        <a href="https://t.me/rent_group_geo" class="btn btn-accent" target="_blank" data-i18n="subscribe">Подписаться</a>
       </div>
 
       <div class="social-card">
@@ -311,7 +318,7 @@ ym(12345678, "init", {
         </div>
         <h3 data-i18n="instagram">Instagram</h3>
         <p data-i18n="instagramDesc">Обзоры объектов, отзывы клиентов и полезные советы</p>
-        <a href="https://www.instagram.com/rent_group_batumi/ " class="btn btn-accent" target="_blank" data-i18n="view">Смотреть</a>
+        <a href="https://www.instagram.com/rent_group_batumi/" class="btn btn-accent" target="_blank" data-i18n="view">Смотреть</a>
       </div>
 
       <div class="social-card">
@@ -323,20 +330,25 @@ ym(12345678, "init", {
         <a href="https://tiktok.com/@rentgroup" class="btn btn-accent" target="_blank" data-i18n="view">Смотреть</a>
       </div>
     
-    <div class="social-card">
-  <div class="social-icon-large facebook">
-    <i class="fab fa-facebook-f"></i>
-  </div>
-  <h3 data-i18n="facebook">Facebook</h3>
-  <p data-i18n="facebookDesc">Новости, акции и специальные предложения от Rent Group</p>
-  <a href=" https://www.facebook.com/share/g/1B8AgFRfMs/?mibextid=wwXIfr" class="btn btn-accent" target="_blank" data-i18n="subscribe">Подписаться</a>
-</div>
-   </div> 
+      <div class="social-card">
+        <div class="social-icon-large facebook">
+          <i class="fab fa-facebook-f"></i>
+        </div>
+        <h3 data-i18n="facebook">Facebook</h3>
+        <p data-i18n="facebookDesc">Новости, акции и специальные предложения от Rent Group</p>
+        <a href="https://www.facebook.com/share/g/1B8AgFRfMs/?mibextid=wwXIfr" class="btn btn-accent" target="_blank" data-i18n="subscribe">Подписаться</a>
+      </div>
+    </div> 
+    
     <!-- QUICK FORM -->
     <div class="quick-form-wrapper">
       <div class="glass-form quick-form">
         <h3 data-i18n="dontWantScroll">Не хотите листать ленту?</h3>
         <form onsubmit="sendForm(event, 'quick')" id="quick-form">
+          <!-- Honeypot -->
+          <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+          <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
+          
           <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
           
           <div class="phone-field">
@@ -346,7 +358,6 @@ ym(12345678, "init", {
                 <span class="selected-code">+995</span>
                 <i class="fas fa-chevron-down"></i>
               </div>
-              
               <div class="country-dropdown">
                 <div class="country-search">
                   <i class="fas fa-search"></i>
@@ -355,7 +366,6 @@ ym(12345678, "init", {
                 <div class="country-list"></div>
               </div>
             </div>
-            
             <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
             <input type="hidden" class="selected-country-code" value="995">
           </div>
@@ -415,7 +425,7 @@ ym(12345678, "init", {
           <a href="https://wa.me/995123456789" class="btn btn-whatsapp" target="_blank">
             <i class="fab fa-whatsapp"></i> WhatsApp
           </a>
-          <a href="https://t.me/rentgroup" class="btn btn-telegram" target="_blank">
+          <a href="https://t.me/rent_group_geo" class="btn btn-telegram" target="_blank">
             <i class="fab fa-telegram-plane"></i> Telegram
           </a>
         </div>
@@ -431,6 +441,10 @@ ym(12345678, "init", {
         <div class="glass-form contact-form">
           <h3><i class="fas fa-home"></i> <span data-i18n="readyPickFlat">Готовы подобрать квартиру?</span></h3>
           <form onsubmit="sendForm(event, 'contact')" id="contact-form">
+            <!-- Honeypot -->
+            <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+            <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
+            
             <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
             
             <div class="phone-field">
@@ -440,7 +454,6 @@ ym(12345678, "init", {
                   <span class="selected-code">+995</span>
                   <i class="fas fa-chevron-down"></i>
                 </div>
-                
                 <div class="country-dropdown">
                   <div class="country-search">
                     <i class="fas fa-search"></i>
@@ -449,7 +462,6 @@ ym(12345678, "init", {
                   <div class="country-list"></div>
                 </div>
               </div>
-              
               <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
               <input type="hidden" class="selected-country-code" value="995">
             </div>
@@ -506,6 +518,10 @@ ym(12345678, "init", {
     <button class="modal-close" onclick="closeModal('callback')"><i class="fas fa-times"></i></button>
     <h3 data-i18n="callbackTitle">Заказать звонок</h3>
     <form onsubmit="sendForm(event, 'callback')" id="callback-form">
+      <!-- Honeypot -->
+      <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+      <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
+      
       <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
       
       <div class="phone-field">
@@ -515,7 +531,6 @@ ym(12345678, "init", {
             <span class="selected-code">+995</span>
             <i class="fas fa-chevron-down"></i>
           </div>
-          
           <div class="country-dropdown">
             <div class="country-search">
               <i class="fas fa-search"></i>
@@ -524,7 +539,6 @@ ym(12345678, "init", {
             <div class="country-list"></div>
           </div>
         </div>
-        
         <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
         <input type="hidden" class="selected-country-code" value="995">
       </div>
@@ -551,19 +565,23 @@ ym(12345678, "init", {
   <i class="fas fa-phone"></i> <span data-i18n="pickObjectBtn">Подобрать объект</span>
 </button>
 
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/YOUR_TAWK_ID/default';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+<!-- Scripts -->
+<script src="app.min.js" defer></script>
+<script src="translations.js" defer></script>
+
+<!-- Tawk.to (отложенная загрузка) -->
+<script>
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var s1 = document.createElement('script');
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/YOUR_TAWK_ID/default';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      document.body.appendChild(s1);
+    }, 3000);
+  });
 </script>
 
-<script src="translations.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

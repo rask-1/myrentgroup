@@ -15,5 +15,10 @@
     "bitrix24": "^0.0.0",
     "express": "^5.2.1",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "cssnano": "^7.1.4",
+    "postcss": "^8.5.8",
+    "terser": "^5.46.1"
   }
 }
