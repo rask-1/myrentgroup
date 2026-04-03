@@ -44,6 +44,9 @@ const translations = {
     view: 'Смотреть',
     tiktok: 'TikTok',
     tiktokDesc: 'Короткие видео об объектах и жизни в Батуми',
+    facebook: 'Facebook',
+    facebookDesc: 'Новости, акции и специальные предложения от Rent Group',
+    subscribe: 'Подписаться',
     dontWantScroll: 'Не хотите листать ленту?',
     sendRequest: 'Отправить заявку',
     
@@ -212,6 +215,9 @@ const translations = {
     view: 'View',
     tiktok: 'TikTok',
     tiktokDesc: 'Short videos about properties and life in Batumi',
+    facebook: 'Facebook',
+    facebookDesc: 'News, promotions and special offers from Rent Group',
+    subscribe: 'Subscribe',
     dontWantScroll: "Don't want to scroll?",
     sendRequest: 'Send request',
     
