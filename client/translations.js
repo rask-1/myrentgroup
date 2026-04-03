@@ -5,7 +5,7 @@ const translations = {
     
     // Hero
     heroTitle: 'Квартира у моря за $5000?<br>Да, это реально <span class="accent">(через рассрочку!)</span>',
-    heroSubtitle: 'Подберём объект под ваш бюджет за 24 часа. Без скрытых комиссий.',
+    heroSubtitle: 'Подберём объект под ваш бюджет за 24 часа',
     yourName: 'Ваше имя',
     phone: 'Телефон',
     phoneMessenger: 'Телефон',
@@ -17,7 +17,7 @@ const translations = {
     firstLine: 'Первая линия у моря',
     firstLineDesc: 'Эксклюзивные предложения с видом на море. Рассрочка от застройщика без процентов и банков.',
     investment: 'Инвестиционные объекты',
-    investmentDesc: 'Квартиры с гарантированной доходностью 15-20% годовых. Помощь в управлении недвижимостью.',
+    investmentDesc: 'Квартиры с доходностью 10-14% годовых. Помощь в управлении недвижимостью.',
     readyFlats: 'Готовые квартиры под ключ',
     readyFlatsDesc: 'Проверенные объекты с ремонтом. Заезжайте и живите или сразу сдавайте в аренду.',
     getWhatsApp: 'Получить подборку в WhatsApp',
@@ -25,9 +25,9 @@ const translations = {
     // Why Us
     whyTitle: 'Почему выбирают нас',
     safety: 'Гарантия безопасности',
-    safetyDesc: 'Полная юридическая проверка всех документов. Работаем официально по договору.',
+    safetyDesc: 'Полная юридическая проверка всех документов. Работаем официально.',
     timeSaving: 'Экономия времени',
-    timeSavingDesc: 'Подбор объектов за 24 часа. Не тратьте дни на самостоятельный поиск.',
+    timeSavingDesc: 'Подбор объектов за 24 часа. Не тратьте недели на самостоятельный поиск.',
     bestPrices: 'Лучшие цены',
     bestPricesDesc: 'Прямые контракты с застройщиками. Скидки до 10% для наших клиентов.',
     support247: 'Поддержка 24/7',
@@ -173,7 +173,7 @@ const translations = {
     
     // Hero
     heroTitle: 'Apartment by the sea for $5000?<br>Yes, it\'s <span class="accent">real (installment plan!)</span>',
-    heroSubtitle: 'We will find an object for your budget in 24 hours. No hidden fees.',
+    heroSubtitle: 'We will select an object within your budget in 24 hours',
     yourName: 'Your name',
     phone: 'Phone',
     phoneMessenger: 'Phone',
@@ -185,7 +185,7 @@ const translations = {
     firstLine: 'First line by the sea',
     firstLineDesc: 'Exclusive offers with sea view. Installment plan from the developer without interest and banks.',
     investment: 'Investment properties',
-    investmentDesc: 'Apartments with guaranteed return of 15-20% per annum. Assistance in property management.',
+    investmentDesc: 'Apartments with return of 10-14% per annum. Property management assistance.',
     readyFlats: 'Ready-to-move-in apartments',
     readyFlatsDesc: 'Verified properties with repairs. Move in and live or rent out immediately.',
     getWhatsApp: 'Get selection in WhatsApp',
@@ -193,9 +193,9 @@ const translations = {
     // Why Us
     whyTitle: 'Why choose us',
     safety: 'Safety guarantee',
-    safetyDesc: 'Full legal verification of all documents. We work officially under contract.',
+    safetyDesc: 'Full legal verification of all documents. We work officially.',
     timeSaving: 'Time saving',
-    timeSavingDesc: 'Selection of objects in 24 hours. Do not spend days searching on your own.',
+    timeSavingDesc: 'Property selection in 24 hours. Do not spend weeks searching on your own.',
     bestPrices: 'Best prices',
     bestPricesDesc: 'Direct contracts with developers. Discounts up to 10% for our clients.',
     support247: '24/7 Support',
