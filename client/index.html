@@ -55,14 +55,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- Preload Critical Resources -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" as="style">
   <link rel="preload" href="styles.min.css" as="style">
   <link rel="preload" href="logorent.png" as="image">
+  <!-- Замените hero-bg.jpg на путь к вашему фоновому изображению -->
+  <link rel="preload" as="image" href="hero-bg.jpg"> 
   
-  <!-- Styles -->
+  <!-- Critical CSS (Inline for FCP) -->
+  <style>
+    body{margin:0;padding:0;font-family:'Montserrat',sans-serif;background:#0A192F;color:#fff;overflow-x:hidden}
+    .header{position:fixed;top:0;left:0;right:0;background:rgba(10,25,47,.95);backdrop-filter:blur(10px);z-index:1000;padding:15px 0;transition:all .3s ease}
+    .container{max-width:1200px;margin:0 auto;padding:0 15px}
+    .hero{min-height:100vh;display:flex;align-items:center;position:relative;background-size:cover;background-position:center}
+    .btn{cursor:pointer;border:none;outline:none;transition:all .3s ease}
+    .preloader{position:fixed;inset:0;background:#0A192F;display:flex;justify-content:center;align-items:center;z-index:9999}
+  </style>
+
+  <!-- Styles (Async Loading) -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="styles.min.css">
-  <!-- Font Awesome - полная версия -->
+  <link rel="stylesheet" href="styles.min.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Structured Data -->
@@ -115,7 +128,7 @@
 <header class="header">
   <div class="container header-inner">
     <a href="#" class="logo-link" onclick="scrollToTop()">
-      <img src="logorent.png" alt="Rent Group" class="logo" loading="lazy" width="200" height="100">
+      <img src="logorent.png" alt="Rent Group" class="logo" loading="eager" width="200" height="100" decoding="async">
     </a>
 
     <div class="header-right">
@@ -179,7 +192,14 @@
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
       <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
       
-      <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
+      <!-- ИМЯ: добавлен name="name" -->
+      <input type="text" 
+             name="name" 
+             placeholder="Ваше имя" 
+             data-i18n="yourName" 
+             required 
+             class="input-name"
+             autocomplete="name">
       
       <div class="phone-field">
         <div class="country-select-wrapper">
@@ -196,7 +216,14 @@
             <div class="country-list"></div>
           </div>
         </div>
-        <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
+        <!-- ТЕЛЕФОН: добавлен name="phone" -->
+        <input type="tel" 
+               name="phone" 
+               placeholder="Телефон" 
+               data-i18n="phone" 
+               required 
+               class="input-phone"
+               autocomplete="tel">
         <input type="hidden" class="selected-country-code" value="995">
       </div>
       
@@ -349,7 +376,13 @@
           <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
           <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
           
-          <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
+          <input type="text" 
+                 name="name" 
+                 placeholder="Ваше имя" 
+                 data-i18n="yourName" 
+                 required 
+                 class="input-name"
+                 autocomplete="name">
           
           <div class="phone-field">
             <div class="country-select-wrapper">
@@ -366,7 +399,13 @@
                 <div class="country-list"></div>
               </div>
             </div>
-            <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
+            <input type="tel" 
+                   name="phone" 
+                   placeholder="Телефон" 
+                   data-i18n="phone" 
+                   required 
+                   class="input-phone"
+                   autocomplete="tel">
             <input type="hidden" class="selected-country-code" value="995">
           </div>
           
@@ -434,7 +473,7 @@
       <div class="contacts-form-wrapper">
         <div class="map-container">
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3077.5!2d41.6!3d41.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDM2JzAwLjAiTiA0McKwMzYnMDAuMCJF!5e0!3m2!1sru!2s!4v1234567890" 
-                  width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy">
+                  width="100%" height="300" style="border:0; border-radius: 12px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
           </iframe>
         </div>
 
@@ -445,7 +484,13 @@
             <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
             <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
             
-            <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
+            <input type="text" 
+                   name="name" 
+                   placeholder="Ваше имя" 
+                   data-i18n="yourName" 
+                   required 
+                   class="input-name"
+                   autocomplete="name">
             
             <div class="phone-field">
               <div class="country-select-wrapper">
@@ -462,11 +507,17 @@
                   <div class="country-list"></div>
                 </div>
               </div>
-              <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
+              <input type="tel" 
+                     name="phone" 
+                     placeholder="Телефон" 
+                     data-i18n="phone" 
+                     required 
+                     class="input-phone"
+                     autocomplete="tel">
               <input type="hidden" class="selected-country-code" value="995">
             </div>
             
-            <select required class="form-select" data-i18n-budget>
+            <select required class="form-select" data-i18n-budget name="budget">
               <option value="" disabled selected>Ваш бюджет</option>
               <option value="50000-100000">$50,000 - $100,000</option>
               <option value="100000-200000">$100,000 - $200,000</option>
@@ -475,7 +526,7 @@
               <option value="500000+">$500,000+</option>
             </select>
             
-            <select required class="form-select" data-i18n-goal>
+            <select required class="form-select" data-i18n-goal name="goal">
               <option value="" disabled selected>Цель покупки</option>
               <option value="investment">Инвестиция</option>
               <option value="living">Для жизни</option>
@@ -522,7 +573,13 @@
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
       <input type="email" name="email2" style="display:none" tabindex="-1" autocomplete="off">
       
-      <input type="text" placeholder="Ваше имя" data-i18n="yourName" required class="input-name">
+      <input type="text" 
+             name="name" 
+             placeholder="Ваше имя" 
+             data-i18n="yourName" 
+             required 
+             class="input-name"
+             autocomplete="name">
       
       <div class="phone-field">
         <div class="country-select-wrapper">
@@ -539,7 +596,13 @@
             <div class="country-list"></div>
           </div>
         </div>
-        <input type="tel" placeholder="Телефон" data-i18n="phone" required class="input-phone">
+        <input type="tel" 
+               name="phone" 
+               placeholder="Телефон" 
+               data-i18n="phone" 
+               required 
+               class="input-phone"
+               autocomplete="tel">
         <input type="hidden" class="selected-country-code" value="995">
       </div>
       
@@ -566,10 +629,10 @@
 </button>
 
 <!-- Scripts -->
-<script src="app.min.js" defer></script>
-<script src="translations.js" defer></script>
+<script src="app.min.js?v=6" defer></script>
+<script src="translations.js?v=6" defer></script>
 
-<!-- Tawk.to (отложенная загрузка) -->
+<!-- Tawk.to (отложенная загрузка для производительности) -->
 <script>
   window.addEventListener('load', function() {
     setTimeout(function() {
@@ -579,7 +642,7 @@
       s1.charset = 'UTF-8';
       s1.setAttribute('crossorigin', '*');
       document.body.appendChild(s1);
-    }, 3000);
+    }, 5000); // Загружаем через 5 секунд после загрузки страницы
   });
 </script>
 
