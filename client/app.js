@@ -204,12 +204,10 @@ const translations = {
 function setLanguage(lang) {
   currentLang = lang;
   
-  // Update buttons
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
   
-  // Update all elements with data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (translations[lang][key]) {
@@ -221,10 +219,7 @@ function setLanguage(lang) {
     }
   });
   
-  // Update HTML lang attribute
   document.documentElement.lang = lang;
-  
-  // Save preference
   localStorage.setItem('rentgroup_lang', lang);
 }
 
@@ -245,7 +240,7 @@ function initCountrySelectors() {
   const countryLists = document.querySelectorAll('.country-list');
   
   countryLists.forEach(list => {
-    countries.forEach((country, index) => {
+    countries.forEach((country) => {
       const option = document.createElement('div');
       option.className = 'country-option';
       option.dataset.code = country.code;
@@ -267,7 +262,6 @@ function initCountrySelectors() {
     });
   });
   
-  // Mark first option as selected
   const firstOptions = document.querySelectorAll('.country-list .country-option:first-child');
   firstOptions.forEach(opt => opt.classList.add('selected'));
 }
@@ -277,7 +271,6 @@ function toggleCountryDropdown(element) {
   const dropdown = wrapper.querySelector('.country-dropdown');
   const select = wrapper.querySelector('.country-select');
   
-  // Close all other dropdowns
   document.querySelectorAll('.country-dropdown').forEach(d => {
     if (d !== dropdown) {
       d.classList.remove('show');
@@ -285,7 +278,6 @@ function toggleCountryDropdown(element) {
     }
   });
   
-  // Toggle current
   dropdown.classList.toggle('show');
   select.classList.toggle('active');
 }
@@ -301,24 +293,19 @@ function selectCountry(option) {
   const flag = option.dataset.flag;
   const code = option.dataset.code;
   
-  // Update display
   select.querySelector('.selected-flag').textContent = flag;
   select.querySelector('.selected-code').textContent = '+' + code;
   
-  // Update selection
   wrapper.querySelectorAll('.country-option').forEach(o => o.classList.remove('selected'));
   option.classList.add('selected');
   
-  // Close dropdown
   dropdown.classList.remove('show');
   select.classList.remove('active');
   
-  // Store code
   if (hiddenCode) {
     hiddenCode.value = code;
   }
   
-  // Focus phone input
   if (phoneInput) {
     phoneInput.focus();
   }
@@ -341,7 +328,6 @@ function filterCountries(input) {
   });
 }
 
-// Close dropdown when clicking outside
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.country-select-wrapper')) {
     document.querySelectorAll('.country-dropdown').forEach(d => {
@@ -366,7 +352,6 @@ function scrollToForm() {
   }
 }
 
-// Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener("click", function(e) {
     const href = this.getAttribute("href");
@@ -400,7 +385,6 @@ function closeModal(type) {
   }
 }
 
-// Close modal on outside click
 document.querySelectorAll(".modal").forEach(modal => {
   modal.addEventListener("click", function(e) {
     if (e.target === this) {
@@ -410,7 +394,6 @@ document.querySelectorAll(".modal").forEach(modal => {
   });
 });
 
-// Close modal on Escape key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     document.querySelectorAll(".modal").forEach(modal => {
@@ -448,7 +431,6 @@ function validateField(field) {
     phoneField.classList.remove('error');
   }
   
-  // Empty field check
   if (!value) {
     isValid = false;
     errorMessage = currentLang === 'ru' ? 'Поле обязательно для заполнения' : 'Field is required';
@@ -489,6 +471,25 @@ function validateForm(form) {
 }
 
 // ============================================
+// PHONE CLEANING UTILS
+// ============================================
+
+function cleanPhoneNumber(phone, countryCode) {
+  // Убираем все не-цифры
+  let clean = phone.replace(/\D/g, '');
+  
+  // Убираем код страны если пользователь ввёл его вручную
+  if (clean.startsWith(countryCode)) {
+    clean = clean.substring(countryCode.length);
+  }
+  
+  // Убираем лидирующие нули
+  clean = clean.replace(/^0+/, '');
+  
+  return clean;
+}
+
+// ============================================
 // FORM SUBMIT
 // ============================================
 
@@ -497,7 +498,6 @@ async function sendForm(e, formType) {
   
   const form = e.target;
   
-  // Validate form
   if (!validateForm(form)) {
     const firstError = form.querySelector('.error');
     if (firstError) {
@@ -506,12 +506,16 @@ async function sendForm(e, formType) {
     return;
   }
   
-  // Collect form data
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+  submitBtn.disabled = true;
+  
   const formData = {};
   const inputs = form.querySelectorAll("input, select");
+  let hasPhoneError = false;
   
   inputs.forEach(input => {
-    // Skip hidden fields
     if (input.classList.contains('selected-country-code') || 
         input.name === 'website' || 
         input.name === 'email2') {
@@ -519,11 +523,17 @@ async function sendForm(e, formType) {
     }
     
     if (input.classList.contains('input-phone')) {
-      // Get country code from hidden input
       const phoneField = input.closest('.phone-field');
       const hiddenCode = phoneField?.querySelector('.selected-country-code');
       const countryCode = hiddenCode?.value || '995';
-      const phoneValue = input.value.trim();
+      
+      let phoneValue = cleanPhoneNumber(input.value, countryCode);
+      
+      if (phoneValue.length < 7 || phoneValue.length > 15) {
+        alert(currentLang === 'ru' ? 'Введите корректный номер телефона (7-15 цифр)' : 'Enter valid phone number (7-15 digits)');
+        hasPhoneError = true;
+        return;
+      }
       
       formData['phone'] = '+' + countryCode + ' ' + phoneValue;
       formData['countryCode'] = '+' + countryCode;
@@ -532,16 +542,22 @@ async function sendForm(e, formType) {
     }
   });
   
-  // Add metadata
+  if (hasPhoneError) {
+    submitBtn.innerHTML = originalBtnText;
+    submitBtn.disabled = false;
+    return;
+  }
+  
+  if (!formData.phone) {
+    alert(currentLang === 'ru' ? 'Введите номер телефона' : 'Enter phone number');
+    submitBtn.innerHTML = originalBtnText;
+    submitBtn.disabled = false;
+    return;
+  }
+  
   formData.formType = formType;
   formData.timestamp = new Date().toISOString();
   formData.language = currentLang;
-  
-  // Update button state
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalBtnText = submitBtn.innerHTML;
-  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
-  submitBtn.disabled = true;
   
   try {
     const response = await fetch("/api/lead", {
@@ -551,28 +567,27 @@ async function sendForm(e, formType) {
     });
     
     if (response.ok) {
-      // Yandex Metrica goal
+      // ✅ ВОССТАНАВЛИВАЕМ КНОПКУ СРАЗУ!
+      submitBtn.innerHTML = originalBtnText;
+      submitBtn.disabled = false;
+      
       if (typeof ym !== 'undefined') {
         ym(12345678, 'reachGoal', 'form_submit', { form_type: formType });
       }
       
-      // Close all modals
       document.querySelectorAll(".modal").forEach(m => m.classList.remove("active"));
       
-      // Show thanks modal
       const thanksModal = document.getElementById("modal-thanks");
       if (thanksModal) {
         thanksModal.classList.add("active");
         document.body.style.overflow = "hidden";
       }
       
-      // Reset form
       form.reset();
       form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
       form.querySelectorAll('.field-error').forEach(el => el.remove());
       form.querySelectorAll('.phone-field').forEach(el => el.classList.remove('error'));
       
-      // Reset country select to Georgia
       form.querySelectorAll('.country-select').forEach(select => {
         select.querySelector('.selected-flag').textContent = '🇬🇪';
         select.querySelector('.selected-code').textContent = '+995';
@@ -585,6 +600,7 @@ async function sendForm(e, formType) {
       });
       
       console.log("✅ Form submitted:", formData);
+      return; // ✅ Важно!
     } else {
       throw new Error("Server error");
     }
@@ -592,8 +608,7 @@ async function sendForm(e, formType) {
     console.error("❌ Error:", error);
     alert(currentLang === 'ru' ? 'Ошибка. Попробуйте позже.' : 'Error. Try again later.');
   } finally {
-    submitBtn.innerHTML = originalBtnText;
-    submitBtn.disabled = false;
+    // Оставляем пустым или удаляем
   }
 }
 
