@@ -4,37 +4,30 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate limiting (простая проверка)
+  // Rate limiting
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const now = Date.now();
   
-  // Проверка на спам (можно добавить Redis для хранения)
   if (global.lastSubmission && global.lastSubmission[ip]) {
     const timeDiff = now - global.lastSubmission[ip];
-    if (timeDiff < 10000) { // 10 секунд между заявками
+    if (timeDiff < 10000) {
       return res.status(429).json({ error: 'Too many requests' });
     }
   }
   global.lastSubmission = global.lastSubmission || {};
   global.lastSubmission[ip] = now;
 
-  // Валидация данных
-  const { name, phone, budget, goal } = req.body;
+  // Получаем данные из формы
+  const { name, phone, budget, goal, formType } = req.body;
   
   if (!name || !phone) {
     return res.status(400).json({ error: 'Name and phone required' });
   }
 
-  // Проверка телефона (только цифры и +)
-  const phoneRegex = /^\+?[0-9\s\-\(\)]{10,20}$/;
-  if (!phoneRegex.test(phone)) {
-    return res.status(400).json({ error: 'Invalid phone format' });
-  }
-
   // Очистка от XSS
   const sanitize = (str) => {
     if (!str) return '';
-    return str.replace(/[<>\"'&]/g, '');
+    return str.replace(/[<>"'&]/g, '');
   };
 
   const cleanData = {
@@ -42,25 +35,40 @@ export default async function handler(req, res) {
     phone: sanitize(phone),
     budget: sanitize(budget),
     goal: sanitize(goal),
+    formType: sanitize(formType),
     timestamp: new Date().toISOString(),
     ip: ip
   };
 
-  // Отправка в Bitrix24
+  // Bitrix24 Webhook
   const BITRIX24_WEBHOOK = process.env.BITRIX24_WEBHOOK;
   
+  // ⚠️ ID ВОРОНКИ "RENT GROUP" - ЗАМЕНИ НА СВОЙ!
+  const RENT_GROUP_FUNNEL_ID = 1; // ← ВПИШИ СЮДА ID ВОРОНКИ!
+  
   try {
-    const response = await fetch(`${BITRIX24_WEBHOOK}crm.lead.add`, {
+    // Создаём СДЕЛКУ (не Лид!)
+    const response = await fetch(`${BITRIX24_WEBHOOK}crm.deal.add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: {
           TITLE: `Заявка с сайта - ${cleanData.name}`,
-          NAME: cleanData.name,
-          PHONE: [{ VALUE: cleanData.phone, VALUE_TYPE: 'WORK' }],
-          STATUS_ID: 'ASSIGNED',
+          OPPORTUNITY: cleanData.budget ? cleanData.budget.replace(/[^0-9-]/g, '') : 0,
+          CATEGORY_ID: RENT_GROUP_FUNNEL_ID, // ID воронки Rent Group
+          STATUS_ID: 'NEW', // Новая сделка
           SOURCE_ID: 'WEB',
-          COMMENTS: `Бюджет: ${cleanData.budget}\nЦель: ${cleanData.goal}\nIP: ${cleanData.ip}`
+          CONTACT: {
+            NAME: cleanData.name,
+            PHONE: [{ VALUE: cleanData.phone, VALUE_TYPE: 'WORK' }]
+          },
+          COMMENTS: `
+Тип формы: ${cleanData.formType}
+Бюджет: ${cleanData.budget || 'Не указан'}
+Цель: ${cleanData.goal || 'Не указана'}
+Время: ${cleanData.timestamp}
+IP: ${cleanData.ip}
+          `.trim()
         }
       })
     });
@@ -69,12 +77,13 @@ export default async function handler(req, res) {
     
     if (result.error) {
       console.error('Bitrix24 error:', result);
-      return res.status(500).json({ error: 'Failed to send lead' });
+      return res.status(500).json({ error: 'Failed to create deal', details: result });
     }
 
-    return res.status(200).json({ success: true });
+    console.log('✅ Deal created:', result.result);
+    return res.status(200).json({ success: true, dealId: result.result });
   } catch (error) {
     console.error('Error:', error);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: 'Server error', message: error.message });
   }
 }

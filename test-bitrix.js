@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const WEBHOOK = 'https://b24-xrpmdc.bitrix24.ru/rest/15/tg84as8mljzspraq/';
+const WEBHOOK = 'https://b24-xrpmdc.bitrix24.ru/rest/15/7qwwvmnd2h3mupgo/';
 
 async function test() {
   try {
