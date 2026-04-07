@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="privacyPageTitle">Политика конфиденциальности | Rent Group</title>
-  <link rel="stylesheet" href="/styles.min.css">
+  <link rel="stylesheet" href="../styles.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .policy-container{max-width:900px;margin:0 auto;padding:120px 20px 40px}
@@ -27,10 +27,8 @@
 </head>
 <body style="background:#0A192F">
   <div class="policy-container">
-    <!-- Header with Back Button + Language Switcher -->
     <div class="policy-header">
       <a href="/" class="policy-back-btn" data-i18n="backToMain">← На главную</a>
-      
       <div class="lang-switcher">
         <button class="lang-btn active" data-lang="ru" onclick="setLanguage('ru')">RU</button>
         <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
@@ -39,10 +37,8 @@
     
     <div class="policy-content">
       <h1 data-i18n="privacyH1">Политика конфиденциальности</h1>
-      
       <h2 data-i18n="privacySection1">1. Общие положения</h2>
-      <p data-i18n="privacyText1">Настоящая политика обработки персональных данных составлена в соответствии с требованиями законодательства Грузии и международного права, и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных, предпринимаемые Rent Group.</p>
-      
+      <p data-i18n="privacyText1">Настоящая политика обработки персональных данных составлена в соответствии с требованиями законодательства Грузии и международного права.</p>
       <h2 data-i18n="privacySection2">2. Сбор и использование информации</h2>
       <p data-i18n="privacyText2">Мы собираем следующие типы информации:</p>
       <ul>
@@ -51,7 +47,6 @@
         <li data-i18n="privacyItem3">Информация о действиях на сайте</li>
         <li data-i18n="privacyItem4">Данные о местоположении (с вашего согласия)</li>
       </ul>
-      
       <h2 data-i18n="privacySection3">3. Цели сбора данных</h2>
       <p data-i18n="privacyText3">Собранные данные используются для:</p>
       <ul>
@@ -60,10 +55,8 @@
         <li data-i18n="privacyUse3">Маркетинговых коммуникаций (с согласия пользователя)</li>
         <li data-i18n="privacyUse4">Аналитики и статистики использования сайта</li>
       </ul>
-      
       <h2 data-i18n="privacySection4">4. Защита данных</h2>
-      <p data-i18n="privacyText4">Мы принимаем все необходимые меры для защиты ваших персональных данных от несанкционированного доступа, изменения или уничтожения.</p>
-      
+      <p data-i18n="privacyText4">Мы принимаем все необходимые меры для защиты ваших персональных данных.</p>
       <h2 data-i18n="privacySection5">5. Ваши права</h2>
       <p data-i18n="privacyText5">Вы имеете право:</p>
       <ul>
@@ -71,17 +64,13 @@
         <li data-i18n="privacyRight2">Потребовать исправления или удаления ваших данных</li>
         <li data-i18n="privacyRight3">Отозвать согласие на обработку данных</li>
       </ul>
-      
       <h2 data-i18n="privacySection6">6. Контакты</h2>
-      <p data-i18n="privacyContact">По вопросам обработки персональных данных обращайтесь: <a href="mailto:info@rentgroup.ge">info@rentgroup.ge</a></p>
-      
+      <p data-i18n="privacyContact">По вопросам: <a href="mailto:info@rentgroup.ge">info@rentgroup.ge</a></p>
       <p class="policy-updated" data-i18n="privacyUpdated">Последнее обновление: Апрель 2026</p>
     </div>
   </div>
 
-  <!-- Правильный путь к translations.js -->
-  <script src="/translations.js?v=10"></script>
-  
+  <script src="../translations.js?v=10"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof initLanguage === 'function') {

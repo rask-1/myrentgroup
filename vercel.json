@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
     {
@@ -17,23 +17,22 @@
       ]
     }
   ],
- 
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/api/lead$",
-      "dest": "/api/lead.js"
+      "source": "/api/lead",
+      "destination": "/api/lead.js"
     },
     {
-      "src": "^/api/telegram-bot$",
-      "dest": "/api/telegram-bot.js"
+      "source": "/api/telegram-bot",
+      "destination": "/api/telegram-bot.js"
     },
     {
-      "src": "^/policy$",
-      "dest": "/client/policy.html"
+      "source": "/policy",
+      "destination": "/client/policy/index.html"
     },
     {
-      "src": "^(?!/api)(.*)$",
-      "dest": "/client/$1"
+      "source": "/(.*)",
+      "destination": "/client/$1"
     }
   ]
 }

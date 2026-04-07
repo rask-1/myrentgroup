@@ -14,6 +14,7 @@ const RENT_GROUP_FUNNEL_ID = 1;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname)); // корень
 app.use(express.static(path.join(__dirname, 'client')));
 
 app.post('/api/lead', async (req, res) => {
