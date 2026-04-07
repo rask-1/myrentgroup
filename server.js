@@ -5,16 +5,12 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ⚠️ ВСТАВЬ СЮДА СВОЙ ВЕБХУК ИЗ BITRIX24
 const BITRIX24_WEBHOOK = 'https://b24-xrpmdc.bitrix24.ru/rest/15/7qwwvmnd2h3mupgo/';
-
-// ⚠️ ID ВОРОНКИ "RENT GROUP" - ЗАМЕНИ 15 НА СВОЙ!
-// Как узнать: Сделки → нажми на название воронки → посмотри в URL category_id=XX
 const RENT_GROUP_FUNNEL_ID = 1;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname)); // корень
+app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'client')));
 
 app.post('/api/lead', async (req, res) => {
@@ -23,7 +19,6 @@ app.post('/api/lead', async (req, res) => {
   console.log('🔥 NEW DEAL:', new Date().toISOString());
   console.log('📝 Data:', leadData);
   
-  // Отправка в Bitrix24
   try {
     await sendToBitrix24(leadData);
     console.log('✅ Sent to Bitrix24 as DEAL');
@@ -38,7 +33,6 @@ async function sendToBitrix24(data) {
   console.log('\n📊 ДАННЫЕ С ФОРМЫ:');
   console.log('Все данные:', JSON.stringify(data, null, 2));
   
-  // Получаем имя и телефон
   const name = data['Ваше имя'] || data['name'] || 'Новая сделка';
   const phone = data['Телефон / Мессенджер'] || 
                 data['Телефон'] || 
@@ -47,18 +41,20 @@ async function sendToBitrix24(data) {
                 data['Ваш телефон'] || 
                 '';
   
-  // Получаем бюджет
   const budgetRaw = data['Ваш бюджет'] || 
                    data['yourBudget'] || 
                    data['budget'] || 
                    '0';
   const budget = parseInt(budgetRaw.replace(/[^0-9]/g, '')) || 0;
   
-  // Получаем цель
   const goal = data['Цель покупки'] || 
                data['buyGoal'] || 
                data['goal'] || 
                'Не указана';
+  
+  // 🔥 ОПРЕДЕЛЯЕМ ТИП ФОРМЫ
+  const formType = data.formType || 'website';
+  const isBot = formType === 'telegram_bot';
   
   try {
     // ✅ ШАГ 1: СОЗДАЁМ КОНТАКТ
@@ -70,9 +66,7 @@ async function sendToBitrix24(data) {
           PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }]
         }
       },
-      {
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { headers: { 'Content-Type': 'application/json' } }
     );
     
     if (contactResponse.data.error) {
@@ -83,40 +77,47 @@ async function sendToBitrix24(data) {
     const contactId = contactResponse.data.result;
     console.log('✅ Контакт создан:', contactId);
     
-    // ✅ ШАГ 2: СОЗДАЁМ СДЕЛКУ И ПРИВЯЗЫВАЕМ КОНТАКТ
+    // ✅ ШАГ 2: СОЗДАЁМ СДЕЛКУ
     const dealResponse = await axios.post(
       `${BITRIX24_WEBHOOK}crm.deal.add`,
       {
         fields: {
-          TITLE: `Заявка с сайта - ${name}`,
+          // 🔥 ГЛАВНОЕ: МЕТКА БОТА В ЗАГОЛОВКЕ
+          TITLE: isBot 
+            ? `🤖 Заявка с бота - ${name}` 
+            : `Заявка с сайта - ${name}`,
+          
           CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
           STATUS_ID: 'NEW',
           OPPORTUNITY: budget,
           CURRENCY_ID: 'USD',
           SOURCE_ID: 'WEB',
-          SOURCE_DESCRIPTION: goal,
           
-          // ✅ ПРИВЯЗЫВАЕМ КОНТАКТ ПО ID
+          // 🔥 ИСТОЧНИК
+          SOURCE_DESCRIPTION: isBot
+            ? `Telegram Bot (${data.language || 'ru'})`
+            : (goal || 'Не указана'),
+          
           CONTACT_ID: contactId,
           
+          // 🔥 КОММЕНТАРИЙ
           COMMENTS: `
 📋 Данные формы:
-Тип формы: ${data.formType || 'Неизвестно'}
-Бюджет: ${budgetRaw}
-Цель покупки: ${goal}
-Время: ${data.timestamp || new Date().toISOString()}
+Тип формы: ${isBot ? '🤖 Telegram Bot' : '🌐 Сайт'}
+Источник: ${data.source || (isBot ? 'Telegram Bot' : 'Сайт')}
 Язык: ${data.language || 'ru'}
+Бюджет: ${budgetRaw}
+Цель: ${goal}
+Время: ${data.timestamp || new Date().toISOString()}
 IP: ${data.ip || 'Не указан'}
 Телефон: ${phone}
+Telegram ID: ${data.telegramUserId || 'Нет'}
+Telegram Username: @${data.telegramUsername || 'Нет'}
           `.trim()
         },
-        params: {
-          REGISTER_SONET_EVENT: "Y"
-        }
+        params: { REGISTER_SONET_EVENT: "Y" }
       },
-      {
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { headers: { 'Content-Type': 'application/json' } }
     );
     
     if (dealResponse.data.error) {
@@ -125,7 +126,7 @@ IP: ${data.ip || 'Не указан'}
     }
     
     console.log('\n✅ УСПЕХ! Сделка создана:', dealResponse.data.result);
-    console.log('📞 Контакт с телефоном привязан:', contactId);
+    console.log('🤖 Is bot:', isBot);
     
     return dealResponse.data;
     
@@ -140,7 +141,7 @@ app.listen(PORT, () => {
 ╔════════════════════════════════════════════╗
 ║  🏠 RENT GROUP - Server                   ║
 ║  📍 http://localhost:${PORT}                ║
-║  🔗 Bitrix24: DEALS → Rent Group Funnel  ║
+║  🔗 Bitrix24: DEALS + Bot Label          ║
 ╚════════════════════════════════════════════╝
   `);
 });
