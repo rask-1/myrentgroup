@@ -43,47 +43,77 @@ export default async function handler(req, res) {
   // Bitrix24 Webhook
   const BITRIX24_WEBHOOK = process.env.BITRIX24_WEBHOOK;
   
-  // ⚠️ ID ВОРОНКИ "RENT GROUP" - ЗАМЕНИ НА СВОЙ!
-  const RENT_GROUP_FUNNEL_ID = 1; // ← ВПИШИ СЮДА ID ВОРОНКИ!
+  // ID ВОРОНКИ "RENT GROUP"
+  const RENT_GROUP_FUNNEL_ID = 1; // ← ЗАМЕНИ НА СВОЙ ID!
   
   try {
-    // Создаём СДЕЛКУ (не Лид!)
-    const response = await fetch(`${BITRIX24_WEBHOOK}crm.deal.add`, {
+    // ✅ ШАГ 1: СОЗДАЁМ КОНТАКТ С ТЕЛЕФОНОМ
+    const contactResponse = await fetch(`${BITRIX24_WEBHOOK}crm.contact.add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: {
+          NAME: cleanData.name,
+          PHONE: [{ VALUE: cleanData.phone, VALUE_TYPE: 'WORK' }]
+        }
+      })
+    });
+
+    const contactResult = await contactResponse.json();
+    
+    if (contactResult.error) {
+      console.error('❌ Ошибка создания контакта:', contactResult);
+      return res.status(500).json({ error: 'Failed to create contact', details: contactResult });
+    }
+
+    const contactId = contactResult.result;
+    console.log('✅ Контакт создан:', contactId);
+
+    // ✅ ШАГ 2: СОЗДАЁМ СДЕЛКУ И ПРИВЯЗЫВАЕМ КОНТАКТ
+    const dealResponse = await fetch(`${BITRIX24_WEBHOOK}crm.deal.add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: {
           TITLE: `Заявка с сайта - ${cleanData.name}`,
-          OPPORTUNITY: cleanData.budget ? cleanData.budget.replace(/[^0-9-]/g, '') : 0,
-          CATEGORY_ID: RENT_GROUP_FUNNEL_ID, // ID воронки Rent Group
-          STATUS_ID: 'NEW', // Новая сделка
+          CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
+          STATUS_ID: 'NEW',
+          OPPORTUNITY: cleanData.budget ? parseInt(cleanData.budget.replace(/[^0-9]/g, '')) : 0,
+          CURRENCY_ID: 'USD',
           SOURCE_ID: 'WEB',
-          CONTACT: {
-            NAME: cleanData.name,
-            PHONE: [{ VALUE: cleanData.phone, VALUE_TYPE: 'WORK' }]
-          },
+          SOURCE_DESCRIPTION: cleanData.goal,
+          CONTACT_ID: contactId, // ← ПРИВЯЗЫВАЕМ КОНТАКТ!
           COMMENTS: `
+📋 Данные формы:
 Тип формы: ${cleanData.formType}
 Бюджет: ${cleanData.budget || 'Не указан'}
 Цель: ${cleanData.goal || 'Не указана'}
 Время: ${cleanData.timestamp}
 IP: ${cleanData.ip}
+Телефон: ${cleanData.phone}
           `.trim()
         }
       })
     });
 
-    const result = await response.json();
+    const dealResult = await dealResponse.json();
     
-    if (result.error) {
-      console.error('Bitrix24 error:', result);
-      return res.status(500).json({ error: 'Failed to create deal', details: result });
+    if (dealResult.error) {
+      console.error('❌ Ошибка создания сделки:', dealResult);
+      return res.status(500).json({ error: 'Failed to create deal', details: dealResult });
     }
 
-    console.log('✅ Deal created:', result.result);
-    return res.status(200).json({ success: true, dealId: result.result });
+    console.log('✅ Сделка создана:', dealResult.result);
+    console.log('📞 Телефон сохранён в контакте:', cleanData.phone);
+    
+    return res.status(200).json({ 
+      success: true, 
+      dealId: dealResult.result,
+      contactId: contactId 
+    });
+    
   } catch (error) {
-    console.error('Error:', error);
+    console.error('❌ Error:', error);
     return res.status(500).json({ error: 'Server error', message: error.message });
   }
 }
