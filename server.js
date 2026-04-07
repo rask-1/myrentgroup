@@ -46,7 +46,7 @@ async function sendToBitrix24(data) {
                 data['Ваш телефон'] || 
                 '';
   
-  // Получаем бюджет (очищаем от не-цифр)
+  // Получаем бюджет
   const budgetRaw = data['Ваш бюджет'] || 
                    data['yourBudget'] || 
                    data['budget'] || 
@@ -59,33 +59,46 @@ async function sendToBitrix24(data) {
                data['goal'] || 
                'Не указана';
   
-  const bitrixData = {
-    fields: {
-      // ✅ СДЕЛКА (не Лид!)
-      TITLE: `Заявка с сайта - ${name}`,
-      
-      // ✅ ВОРОНКА "RENT GROUP"
-      CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
-      
-      // ✅ СТАТУС СДЕЛКИ
-      STATUS_ID: 'NEW',
-      
-      // ✅ СУММА СДЕЛКИ (из бюджета)
-      OPPORTUNITY: budget,
-      CURRENCY_ID: 'USD',
-      
-      // ✅ ИСТОЧНИК
-      SOURCE_ID: 'WEB',
-      SOURCE_DESCRIPTION: goal,
-      
-      // ✅ КОНТАКТ (создаётся вместе со сделкой)
-      CONTACT: {
-        NAME: name,
-        PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }]
+  try {
+    // ✅ ШАГ 1: СОЗДАЁМ КОНТАКТ
+    const contactResponse = await axios.post(
+      `${BITRIX24_WEBHOOK}crm.contact.add`,
+      {
+        fields: {
+          NAME: name,
+          PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }]
+        }
       },
-      
-      // ✅ КОММЕНТАРИЙ
-      COMMENTS: `
+      {
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (contactResponse.data.error) {
+      console.error('❌ Ошибка создания контакта:', contactResponse.data);
+      throw new Error('Failed to create contact');
+    }
+    
+    const contactId = contactResponse.data.result;
+    console.log('✅ Контакт создан:', contactId);
+    
+    // ✅ ШАГ 2: СОЗДАЁМ СДЕЛКУ И ПРИВЯЗЫВАЕМ КОНТАКТ
+    const dealResponse = await axios.post(
+      `${BITRIX24_WEBHOOK}crm.deal.add`,
+      {
+        fields: {
+          TITLE: `Заявка с сайта - ${name}`,
+          CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
+          STATUS_ID: 'NEW',
+          OPPORTUNITY: budget,
+          CURRENCY_ID: 'USD',
+          SOURCE_ID: 'WEB',
+          SOURCE_DESCRIPTION: goal,
+          
+          // ✅ ПРИВЯЗЫВАЕМ КОНТАКТ ПО ID
+          CONTACT_ID: contactId,
+          
+          COMMENTS: `
 📋 Данные формы:
 Тип формы: ${data.formType || 'Неизвестно'}
 Бюджет: ${budgetRaw}
@@ -93,34 +106,32 @@ async function sendToBitrix24(data) {
 Время: ${data.timestamp || new Date().toISOString()}
 Язык: ${data.language || 'ru'}
 IP: ${data.ip || 'Не указан'}
-      `.trim()
-    },
-    params: {
-      REGISTER_SONET_EVENT: "Y"
-    }
-  };
-  
-  console.log('\n📤 ОТПРАВЛЯЕМ В BITRIX24 (СДЕЛКА):');
-  console.log(JSON.stringify(bitrixData, null, 2));
-  
-  // ✅ МЕТОД: crm.deal.add (НЕ crm.lead.add!)
-  const response = await axios.post(
-    `${BITRIX24_WEBHOOK}crm.deal.add`,
-    bitrixData,
-    {
-      headers: {
-        'Content-Type': 'application/json'
+Телефон: ${phone}
+          `.trim()
+        },
+        params: {
+          REGISTER_SONET_EVENT: "Y"
+        }
+      },
+      {
+        headers: { 'Content-Type': 'application/json' }
       }
+    );
+    
+    if (dealResponse.data.error) {
+      console.error('❌ Ошибка создания сделки:', dealResponse.data);
+      throw new Error('Failed to create deal');
     }
-  );
-  
-  if (response.data.error) {
-    console.error('\n❌ ОШИБКА:', response.data);
-    throw new Error(response.data.error_description);
+    
+    console.log('\n✅ УСПЕХ! Сделка создана:', dealResponse.data.result);
+    console.log('📞 Контакт с телефоном привязан:', contactId);
+    
+    return dealResponse.data;
+    
+  } catch (error) {
+    console.error('❌ Критическая ошибка:', error.message);
+    throw error;
   }
-  
-  console.log('\n✅ УСПЕХ! Сделка создана в воронке Rent Group:', response.data.result);
-  return response.data;
 }
 
 app.listen(PORT, () => {
