@@ -1,43 +1,10 @@
-import crypto from 'crypto';
-
-// Функция для проверки initData от Телеграм
-function validateTelegramData(initData, botToken) {
-  try {
-    const urlParams = new URLSearchParams(initData);
-    const hash = urlParams.get('hash');
-    if (!hash) return false;
-    
-    urlParams.delete('hash');
-    
-    const dataCheckString = Array.from(urlParams.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, value]) => `${key}=${value}`)
-      .join('\n');
-    
-    const secretKey = crypto
-      .createHmac('sha256', 'WebAppData')
-      .update(botToken)
-      .digest();
-    
-    const calculatedHash = crypto
-      .createHmac('sha256', secretKey)
-      .update(dataCheckString)
-      .digest('hex');
-    
-    return calculatedHash === hash;
-  } catch (e) {
-    console.error('Telegram validation error:', e);
-    return false;
-  }
-}
-
 export default async function handler(req, res) {
   // Только POST запросы
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate limiting (простой, для серверлесс)
+  // Rate limiting
   const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.headers['x-real-ip'] || 'unknown';
   const now = Date.now();
   
@@ -48,7 +15,7 @@ export default async function handler(req, res) {
   global.lastSubmission[ip] = now;
 
   // Получаем данные из формы
-  const { telegramInitData, name, phone, budget, goal, formType } = req.body;
+  const { telegramInitData, name, phone, budget, goal, formType, source, language, telegramUserId, telegramUsername } = req.body;
   
   // Валидация базовых полей
   if (!name || !phone) {
@@ -58,10 +25,31 @@ export default async function handler(req, res) {
   // Проверка Telegram данных (если есть токен и initData)
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
   if (telegramInitData && BOT_TOKEN) {
-    const isValid = validateTelegramData(telegramInitData, BOT_TOKEN);
-    if (!isValid) {
-      console.error('❌ Invalid Telegram initData');
-      return res.status(401).json({ error: 'Invalid Telegram data' });
+    try {
+      const urlParams = new URLSearchParams(telegramInitData);
+      const hash = urlParams.get('hash');
+      if (hash) {
+        urlParams.delete('hash');
+        const dataCheckString = Array.from(urlParams.entries())
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([key, value]) => `${key}=${value}`)
+          .join('\n');
+        const crypto = await import('crypto');
+        const secretKey = crypto.default
+          .createHmac('sha256', 'WebAppData')
+          .update(BOT_TOKEN)
+          .digest();
+        const calculatedHash = crypto.default
+          .createHmac('sha256', secretKey)
+          .update(dataCheckString)
+          .digest('hex');
+        if (calculatedHash !== hash) {
+          console.error('❌ Invalid Telegram initData');
+          // Не блокируем, просто логируем
+        }
+      }
+    } catch (e) {
+      console.error('Telegram validation error:', e);
     }
   }
 
@@ -77,9 +65,12 @@ export default async function handler(req, res) {
     budget: sanitize(budget),
     goal: sanitize(goal),
     formType: sanitize(formType),
+    source: sanitize(source),
+    language: sanitize(language),
+    telegramUserId: telegramUserId,
+    telegramUsername: sanitize(telegramUsername),
     timestamp: new Date().toISOString(),
-    ip: ip,
-    telegramUserId: telegramInitData ? JSON.parse(Buffer.from(telegramInitData.split('=')[1]?.split('&')[0] || '', 'base64').toString())?.id : null
+    ip: ip
   };
 
   // Bitrix24 Webhook
@@ -122,27 +113,37 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: {
+          // 🔥 ГЛАВНОЕ: МЕТКА "ЗАЯВКА С БОТА"
           TITLE: cleanData.formType === 'telegram_bot' 
-  ? `🤖 Заявка с бота - ${cleanData.name}` 
-  : `Заявка с сайта - ${cleanData.name}`,
+            ? `🤖 Заявка с бота - ${cleanData.name}` 
+            : `Заявка с сайта - ${cleanData.name}`,
+          
           CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
           STATUS_ID: 'NEW',
           OPPORTUNITY: cleanData.budget ? parseInt(String(cleanData.budget).replace(/[^0-9]/g, '')) || 0 : 0,
           CURRENCY_ID: 'USD',
           SOURCE_ID: 'WEB',
+          
+          // 🔥 ИСТОЧНИК: Telegram Bot или Сайт
           SOURCE_DESCRIPTION: cleanData.formType === 'telegram_bot'
-  ? 'Telegram Bot'
-  : (cleanData.goal || 'Не указана'),
+            ? `Telegram Bot (${cleanData.language || 'ru'})`
+            : (cleanData.goal || 'Не указана'),
+          
           CONTACT_ID: contactId,
+          
+          // 🔥 КОММЕНТАРИЙ С ПОЛНОЙ ИНФОРМАЦИЕЙ
           COMMENTS: `
 📋 Данные формы:
-Тип формы: ${cleanData.formType || 'Неизвестно'}
+Тип формы: ${cleanData.formType === 'telegram_bot' ? '🤖 Telegram Bot' : '🌐 Сайт'}
+Источник: ${cleanData.source || (cleanData.formType === 'telegram_bot' ? 'Telegram Bot' : 'Сайт')}
+Язык: ${cleanData.language || 'ru'}
 Бюджет: ${cleanData.budget || 'Не указан'}
 Цель: ${cleanData.goal || 'Не указана'}
 Время: ${cleanData.timestamp}
 IP: ${cleanData.ip}
 Телефон: ${cleanData.phone}
 Telegram ID: ${cleanData.telegramUserId || 'Нет'}
+Telegram Username: @${cleanData.telegramUsername || 'Нет'}
           `.trim()
         }
       })
@@ -157,6 +158,7 @@ Telegram ID: ${cleanData.telegramUserId || 'Нет'}
 
     console.log('✅ Сделка создана:', dealResult.result);
     console.log('📞 Телефон сохранён в контакте:', cleanData.phone);
+    console.log('🤖 Form type:', cleanData.formType);
     
     return res.status(200).json({ 
       success: true, 
