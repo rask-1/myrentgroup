@@ -122,13 +122,17 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: {
-          TITLE: `Заявка с сайта - ${cleanData.name}`,
+          TITLE: cleanData.formType === 'telegram_bot' 
+  ? `🤖 Заявка с бота - ${cleanData.name}` 
+  : `Заявка с сайта - ${cleanData.name}`,
           CATEGORY_ID: RENT_GROUP_FUNNEL_ID,
           STATUS_ID: 'NEW',
           OPPORTUNITY: cleanData.budget ? parseInt(String(cleanData.budget).replace(/[^0-9]/g, '')) || 0 : 0,
           CURRENCY_ID: 'USD',
           SOURCE_ID: 'WEB',
-          SOURCE_DESCRIPTION: cleanData.goal || 'Не указана',
+          SOURCE_DESCRIPTION: cleanData.formType === 'telegram_bot'
+  ? 'Telegram Bot'
+  : (cleanData.goal || 'Не указана'),
           CONTACT_ID: contactId,
           COMMENTS: `
 📋 Данные формы:
